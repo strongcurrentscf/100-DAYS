@@ -1,0 +1,111 @@
+/* * {
+    margin: 0;
+    padding: 0;
+} */
+
+body {
+    font-family: sans-serif;
+    background-color: rgb(231, 253, 255);
+}
+
+h1 {
+    text-align: center;
+    margin: 2rem;
+}
+
+form {
+    width: 40rem;
+    margin: auto;
+    background-color: rgb(245, 246, 255);
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+}
+
+section {
+    margin: 1rem;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+}
+
+label {
+    color: rgb(54, 54, 72);
+    display: block;
+
+    margin: 0.5rem 0;
+}
+
+input,
+textarea,
+select {
+    font: inherit;
+    padding: 0.5rem;
+    border: 1px solid rgb(159, 157, 196);
+    border-radius: 4px;
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: none;
+}
+
+input:focus,
+textarea:focus {
+    background-color: rgb(218, 218, 236);
+}
+
+button {
+    font: inherit;
+    border: 1px solid rgb(120, 116, 193);
+    padding: 0.5rem 1.5rem;
+    margin: 0 0.125rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.form-actions {
+    text-align: right;
+    /* display: flex;
+    flex-direction: row-reverse; */
+}
+
+.btn-filled {
+    background-color: rgb(120, 116, 193);
+    color: white;
+}
+
+.btn-empty {
+    background-color: transparent;
+    color: rgb(120, 116, 193);
+
+}
+
+.btn-filled:hover {
+    background-color: rgb(163, 163, 228);
+    border-color: rgb(163, 163, 228);
+}
+
+.btn-empty:hover {
+    background-color: rgb(218, 218, 236);
+
+}
+
+.inline-control {
+    display: flex;
+}
+
+.inline-control label {
+    margin: 0;
+    margin-left: 0.5rem;
+}
+
+.inline-control input {
+    width: auto;
+}
