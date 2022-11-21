@@ -23,6 +23,8 @@ function updateRemainingChars(e) {
   } else {
     inputElement.classList.remove("warn");
     remainingCharsElement.classList.remove("warn");
+    inputElement.classList.remove("error");
+    remainingCharsElement.classList.remove("error");
   }
 }
 
