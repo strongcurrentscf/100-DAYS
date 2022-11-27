@@ -1,20 +1,51 @@
-const editPlayer1ButtonElement = document.getElementById("edit-player-1-btn");
-const editPlayer2ButtonElement = document.getElementById("edit-player-2-btn");
+function openPlayerConfig(e) {
+  e.preventDefault();
+  editedPlayer = +e.target.dataset.playerid;
 
-const playerNameFormElement = document.querySelector(".modal");
-const playerNameFormBackdropElement = document.getElementById("backdrop");
-
-const cancelFormButtonElement = document.getElementById("cancel-btn");
-
-function displayForm() {
-  playerNameFormElement.style.display = "block";
-  playerNameFormBackdropElement.style.display = "block";
+  playerConfigOverlayElement.style.display = "block";
+  backdropElement.style.display = "block";
 }
 
-function closeForm() {
-  playerNameFormElement.style.display = "none";
-  playerNameFormBackdropElement.style.display = "none";
+function closePlayerConfig() {
+  playerConfigOverlayElement.style.display = "none";
+  backdropElement.style.display = "none";
+  formElement.firstElementChild.classList.remove("error");
+  formElement.firstElementChild.lastElementChild.value = "";
+  errorsOutputElement.textContent = "";
 }
 
-editPlayer1ButtonElement.addEventListener("click", displayForm);
-cancelFormButtonElement.addEventListener("click", closeForm);
+function openAlertSetPlayersOverlay() {
+  alertSetPlayersOverlayElement.style.display = "block";
+  backdropElement.style.display = "block";
+}
+
+function closeAlertSetPlayerOverlay() {
+  alertSetPlayersOverlayElement.style.display = "none";
+  backdropElement.style.display = "none";
+}
+
+function closeAllModals() {
+  closePlayerConfig();
+  closeAlertSetPlayerOverlay();
+}
+
+function savePlayerConfig(e) {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const enteredPlayerName = formData.get("playername").trim();
+
+  if (!enteredPlayerName) {
+    e.target.firstElementChild.classList.add("error");
+    errorsOutputElement.textContent = "Please enter a valid name!";
+    return;
+  }
+
+  const updatedPlayerDataElement = document.getElementById(
+    "player-" + editedPlayer + "-data"
+  );
+
+  updatedPlayerDataElement.children[1].textContent = enteredPlayerName;
+  players[editedPlayer - 1].name = enteredPlayerName;
+
+  closePlayerConfig();
+}

@@ -1,8 +1,9 @@
-.config-overlay {
+#config-overlay,
+#alert-set-players-overlay {
     text-align: center;
 }
 
-.config-overlay h2 {
+#config-overlay h2 {
     margin: 0.5rem 0;
 }
 
@@ -23,11 +24,23 @@
     padding: 0.35rem;
 }
 
+.error label {
+    color: rgb(136, 2, 2);
+
+}
+
+.error input {
+    border-color: rgb(136, 2, 2);
+    color: rgb(136, 2, 2);
+    background-color: rgb(253, 219, 219);
+}
+
 #game-configuration {
     width: 90%;
     max-width: 40rem;
     margin: 3rem auto;
     text-align: center;
+
 }
 
 #game-configuration ol {
