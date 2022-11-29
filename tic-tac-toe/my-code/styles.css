@@ -179,7 +179,7 @@ li.player {
 
 #active-game {
     margin: 2rem 0 5rem 0;
-    /* display: none; */
+    display: none;
 }
 
 #active-game article {

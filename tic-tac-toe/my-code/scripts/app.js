@@ -6,6 +6,8 @@ const gameData = [
 
 let editedPlayer = 0;
 let activePlayer = 0;
+let currentRound = 1;
+let gameIsOver = false;
 
 const players = [
   {
@@ -44,6 +46,6 @@ cancelFormButtonElement.addEventListener("click", closeForm);
 okAlertButtonElement.addEventListener("click", closeForm);
 playerNameFormBackdropElement.addEventListener("click", closeForm);
 formElement.addEventListener("submit", setPlayerName);
-startGameButtonElement.addEventListener("click", displayGameBoard);
+startGameButtonElement.addEventListener("click", startNewGame);
 
 gameBoardElement.addEventListener("click", selectField);

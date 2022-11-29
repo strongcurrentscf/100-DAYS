@@ -7,8 +7,9 @@
 #game-over {
     width: 90%;
     max-width: 40rem;
+    text-align: center;
     margin: auto;
-    padding: 1rem 2rem;
+    padding: 1rem 1rem;
     background-color: rgb(50, 5, 87);
     color: white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
