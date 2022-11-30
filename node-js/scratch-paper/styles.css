@@ -1,0 +1,31 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    background-color: rgb(211, 211, 244);
+
+    /* margin: 0 auto; */
+}
+
+div {
+    height: 100%;
+    width: 20rem;
+    margin: 0 auto;
+    max-width: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* display: flex; */
+    background-color: rgb(100, 100, 228);
+    /* margin: 0 auto; */
+
+}
+
+h1 {
+    color: rgb(24, 24, 183);
+    /* margin: 0 auto; */
+}
