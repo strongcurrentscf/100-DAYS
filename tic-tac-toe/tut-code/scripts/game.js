@@ -24,6 +24,7 @@ function startNewGame() {
 
     activePlayerNameElement.textContent = players[activePlayer].name;
     gameAreaElement.style.display = "block";
+    gameAreaElement.scrollIntoView({ behavior: "smooth", block: "start" });
     return;
   }
   openAlertSetPlayersOverlay();
