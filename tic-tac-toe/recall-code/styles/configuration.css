@@ -1,4 +1,5 @@
-#config-overlay {
+#config-overlay,
+#set-players-alert-overlay {
     text-align: center;
 }
 
@@ -20,7 +21,7 @@
 #game-config {
     width: 90%;
     max-width: 40rem;
-    margin: 2rem auto;
+    margin: 1rem auto;
     text-align: center;
 }
 
@@ -36,8 +37,8 @@
     padding: 1rem;
     width: 50%;
     background-color: rgb(204, 232, 223);
-    border-radius: 4px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
 }
 
 #game-config h2 {

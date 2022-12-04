@@ -9,11 +9,12 @@ body {
     background-color: rgb(26, 93, 71);
     color: white;
     text-align: center;
-    padding: 2rem 5%;
+    padding: 1rem 5%;
 }
 
 #main-header p {
     font-weight: 200;
+    margin: 0;
 }
 
 .btn {
