@@ -31,10 +31,11 @@
       <aside class="modal" id="config-overlay">
         <h2>Choose Your Name</h2>
         <form action="">
-          <div>
-            <label for="username" name="username">Player name</label>
-            <input type="text" id="username" />
+          <div class="config-form">
+            <label for="playername">Player name</label>
+            <input type="text" name="playername" id="playername" required />
           </div>
+          <p id="config-error-message"></p>
           <div>
             <button type="reset" class="btn btn-alt" id="cancel-btn">
               Cancel
@@ -54,7 +55,13 @@
               <h2>Player 1</h2>
               <h3>PLAYER NAME</h3>
               <p class="player-symbol">X</p>
-              <button class="btn btn-alt" id="edit-player-1-btn">Edit</button>
+              <button
+                class="btn btn-alt"
+                id="edit-player-1-btn"
+                data-playerid="1"
+              >
+                Edit
+              </button>
             </article>
           </li>
           <li>
@@ -62,7 +69,13 @@
               <h2>Player 2</h2>
               <h3>PLAYER NAME</h3>
               <p class="player-symbol">O</p>
-              <button class="btn btn-alt" id="edit-player-2-btn">Edit</button>
+              <button
+                class="btn btn-alt"
+                id="edit-player-2-btn"
+                data-playerid="2"
+              >
+                Edit
+              </button>
             </article>
           </li>
         </ol>

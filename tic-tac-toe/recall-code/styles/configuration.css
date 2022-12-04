@@ -3,20 +3,31 @@
     text-align: center;
 }
 
-#config-overlay label {
+.config-form label {
     display: block;
     font-weight: bold;
     margin-bottom: 0.5rem;
 
 }
 
-#config-overlay input {
+.config-form input {
     font: inherit;
     margin-bottom: 1rem;
     padding: 0.35rem;
     border: 1px solid rgb(185, 185, 185);
-    width: 15rem
+    width: 15rem;
 }
+
+.error label {
+    color: rgb(166, 0, 0);
+}
+
+.error input {
+    border-color: rgb(166, 0, 0);
+    color: rgb(166, 0, 0);
+    background-color: rgb(254, 164, 164);
+}
+
 
 #game-config {
     width: 90%;
