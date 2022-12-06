@@ -58,3 +58,9 @@
 #game-board li:hover {
     background-color: rgb(26, 93, 71)
 }
+
+#game-board li.disabled {
+    background-color: rgb(26, 93, 71);
+    cursor: default;
+    color: white;
+}

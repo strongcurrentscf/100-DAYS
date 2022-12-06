@@ -2,8 +2,7 @@ function openPlayerConfig(e) {
   playerToEdit = +e.target.dataset.playerid;
   backdropEl.style.display = "block";
   configPlayerFormOverlayEl.style.display = "block";
-
-  console.log(playerToEdit);
+  formEl.firstElementChild.lastElementChild.focus();
 }
 
 function closePlayerConfig() {
