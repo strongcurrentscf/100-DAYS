@@ -1,0 +1,21 @@
+{
+  "name": "tut-code",
+  "version": "1.0.0",
+  "description": "Getting Started with Node & Express",
+  "main": "scripts/app.js",
+  "scripts": {
+    "start": "nodemon scripts/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/strongcurrentscf/100-DAYS.git"
+  },
+  "author": "CF",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
