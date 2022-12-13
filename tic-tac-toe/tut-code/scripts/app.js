@@ -25,6 +25,7 @@ const gameAreaElement = document.getElementById("active-game");
 const activePlayerNameElement = document.getElementById("active-player-name");
 const gameOverElement = document.getElementById("game-over");
 const winnerNameElement = document.getElementById("winner-name");
+const gameBoardElement = document.getElementById("game-board");
 
 const editPlayer1ButtonElement = document.getElementById("edit-player-1-btn");
 const editPlayer2ButtonElement = document.getElementById("edit-player-2-btn");
@@ -32,8 +33,8 @@ const cancelFormButtonElement = document.getElementById("cancel-btn");
 const okAlertButtonElement = document.getElementById("ok-btn");
 const startNewGameButtonElement = document.getElementById("start-game-btn");
 // const gameFieldElements = document.querySelectorAll("#game-board li");
-const gameBoardElement = document.getElementById("game-board");
 
+//////////listeners
 backdropElement.addEventListener("click", closeAllModals);
 cancelFormButtonElement.addEventListener("click", closePlayerConfig);
 okAlertButtonElement.addEventListener("click", closeAlertSetPlayerOverlay);
