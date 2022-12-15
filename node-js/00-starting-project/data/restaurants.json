@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Test Amish",
+    "address": "5 Teststreet, Testtown",
+    "cuisine": "Amish",
+    "website": "https://testamish.com",
+    "description": "100% Organic!"
+  },
+  {
+    "name": "Test Indian",
+    "address": "10 Testroad, Testcity",
+    "cuisine": "Indian",
+    "website": "https://testindian.com",
+    "description": "Spicy!"
+  },
+  {
+    "name": "Test Amish",
+    "address": "5 Teststreet, Testtown",
+    "cuisine": "Amish",
+    "website": "https://testamish.com",
+    "description": "100% Organic!"
+  }
+]
