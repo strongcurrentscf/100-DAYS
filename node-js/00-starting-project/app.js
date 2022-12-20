@@ -7,6 +7,8 @@ const path = require("path");
 const express = require("express");
 const uuid = require("uuid");
 
+const resData = require("./util/restaurant-data");
+
 const app = express();
 
 app.set("views", path.join(__dirname, "views"));
@@ -29,26 +31,25 @@ app.get("/restaurants", function (req, res) {
   //   const htmlFilePath = path.join(__dirname, "views", "restaurants.html");
   //   res.sendFile(htmlFilePath);
 
-  const filePath = path.join(__dirname, "data", "restaurants.json");
-
-  const fileData = fs.readFileSync(filePath);
-  const storedRestaurants = JSON.parse(fileData);
+  const restaurants = resData.getStoredRestaurants();
 
   res.render("restaurants", {
-    numberOfRestaurants: storedRestaurants.length,
-    restaurants: storedRestaurants,
+    numberOfRestaurants: restaurants.length,
+    restaurants: restaurants,
   });
 });
 
 app.get("/restaurants/:id", function (req, res) {
   const restaurantId = req.params.id;
-  const filePath = path.join(__dirname, "data", "restaurants.json");
-  const fileData = fs.readFileSync(filePath);
-  const storedRestaurants = JSON.parse(fileData);
+  const restaurants = resData.getStoredRestaurants();
 
-  const restaurant = storedRestaurants.find(
+  const restaurant = restaurants.find(
     (restaurant) => restaurant.id === restaurantId
   );
+
+  if (!restaurant) {
+    return res.status(404).render("404");
+  }
 
   res.render("restaurant-detail", {
     restaurant: restaurant,
@@ -65,14 +66,11 @@ app.get("/recommend", function (req, res) {
 app.post("/recommend", function (req, res) {
   const restaurant = req.body;
   restaurant.id = uuid.v4();
-  const filePath = path.join(__dirname, "data", "restaurants.json");
+  const restaurants = resData.getStoredRestaurants();
 
-  const fileData = fs.readFileSync(filePath);
-  const storedRestaurants = JSON.parse(fileData);
+  restaurants.push(restaurant);
 
-  storedRestaurants.push(restaurant);
-
-  fs.writeFileSync(filePath, JSON.stringify(storedRestaurants));
+  resData.storeRestaurants(restaurants);
 
   res.redirect("/confirm");
 });
@@ -89,6 +87,14 @@ app.get("/about", function (req, res) {
   //   res.sendFile(htmlFilePath);
 
   res.render("about");
+});
+
+app.use(function (req, res) {
+  res.status(404).render("404");
+});
+
+app.use(function (error, req, res, next) {
+  res.status(500).render("500");
 });
 
 app.listen(3000);

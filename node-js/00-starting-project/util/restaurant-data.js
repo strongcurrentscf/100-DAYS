@@ -1,0 +1,23 @@
+//file-system is used to open and read files
+const fs = require("fs");
+
+//makes creating file paths robust
+const path = require("path");
+
+const filePath = path.join(__dirname, "..", "data", "restaurants.json");
+
+function getStoredRestaurants() {
+  const fileData = fs.readFileSync(filePath);
+  const storedRestaurants = JSON.parse(fileData);
+
+  return storedRestaurants;
+}
+
+function storeRestaurants(storableRestaurants) {
+  fs.writeFileSync(filePath, JSON.stringify(storableRestaurants));
+}
+
+module.exports = {
+  getStoredRestaurants: getStoredRestaurants,
+  storeRestaurants: storeRestaurants,
+};
