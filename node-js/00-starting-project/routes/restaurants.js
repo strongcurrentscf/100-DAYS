@@ -6,9 +6,6 @@ const router = express.Router();
 const resData = require("../util/restaurant-data");
 
 router.get("/restaurants", function (req, res) {
-  //   const htmlFilePath = path.join(__dirname, "views", "restaurants.html");
-  //   res.sendFile(htmlFilePath);
-
   let order = req.query.order;
   let nextOrder = "desc";
   if (order !== "asc" && order !== "desc") {
