@@ -9,8 +9,16 @@
     <%- include('includes/header') %>
     <main id="all-posts">
       <h1>All Posts</h1>
-      <% for (const post of posts) { %> <%- include('includes/post-item', {post:
-      post}) %> <% } %>
+      <% if (!posts || posts.length === 0) { %>
+      <p>No posts found - maybe start creating some?</p>
+      <a class="btn" href="/new-post">Create a new post</a>
+      <% } else { %>
+      <ol class="posts-list">
+        <% for (const post of posts) { %>
+        <li><%- include('includes/post-item', {post: post}) %></li>
+        <% } %>
+      </ol>
+      <% } %>
     </main>
   </body>
 </html>
