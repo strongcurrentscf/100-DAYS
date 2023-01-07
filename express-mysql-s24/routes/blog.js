@@ -8,14 +8,38 @@ router.get("/", function (req, res) {
   res.redirect("/posts");
 });
 
-router.get("/posts", function (req, res) {
-  res.render("posts-list");
+router.get("/posts", async function (req, res) {
+  const [posts] = await db.query(
+    "SELECT * FROM posts INNER JOIN authors ON posts.author_id = authors.id"
+  );
+
+  console.log(posts);
+
+  res.render("posts-list", { posts: posts });
 });
 
 router.get("/new-post", async function (req, res) {
   const [authors] = await db.query("SELECT * FROM blog.authors");
 
   res.render("create-post", { authors: authors });
+});
+
+router.post("/posts", async function (req, res) {
+  const data = [
+    req.body.title,
+    req.body.summary,
+    req.body.content,
+    req.body.author,
+  ];
+
+  await db.query(
+    "INSERT INTO blog.posts (title, summary, body, author_id) VALUES (?)",
+    [data]
+  );
+
+  //   console.log(data); //testing
+
+  res.redirect("/posts");
 });
 
 module.exports = router;
