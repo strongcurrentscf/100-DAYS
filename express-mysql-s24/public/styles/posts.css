@@ -4,7 +4,7 @@
   text-align: center;
 }
 
-#posts-list {
+.posts-list {
   margin: 3rem auto;
   max-width: 40rem;
 }
@@ -52,5 +52,6 @@
 }
 
 #body {
-  white-space: pre-wrap; /* This ensures that line breaks and whitespace are kept */
+  white-space: pre-wrap;
+  /* This ensures that line breaks and whitespace are kept */
 }
