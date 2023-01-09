@@ -78,10 +78,10 @@ router.get("/posts/:id", async function (req, res) {
 //   res.render("post-detail", { post: post });
 // });
 
-router.get("/update-post/:id", async function (req, res) {
+router.get("/posts/:id/update", async function (req, res) {
   const postId = req.params.id;
   const query = `
-    SELECT title, summary, body FROM blog.posts 
+    SELECT id, title, summary, body FROM blog.posts 
     WHERE posts.id = ${postId}
   `;
   const [[post]] = await db.query(query);
@@ -91,24 +91,30 @@ router.get("/update-post/:id", async function (req, res) {
   res.render("update-post", { post: post });
 });
 
-router.post("/update-post/:id", async function (req, res) {
+router.post("/update-post/:id/edit", async function (req, res) {
   const postId = req.params.id;
-  const [title, summary, body] = [
+  const [title, summary, content] = [
     req.body.title,
     req.body.summary,
-    req.body.body,
+    req.body.content,
   ];
 
   const query = `
     UPDATE blog.posts 
-    SET title= "${title}", summary= "${summary}", body= "${body}"
+    SET title = "${title}", summary = "${summary}", body = "${content}"
     WHERE blog.posts.id = ${postId}
   `;
-  //     const [[post]] = await db.query(query);
+  await db.query(query);
 
-  //   console.log(post);
+  res.redirect("/posts");
+});
 
-  //   res.render("post-detail", { post: post });
+router.post("/posts/:id/delete", async function (req, res) {
+  const query = `DELETE FROM blog.posts WHERE id = ?`;
+
+  await db.query(query, [req.params.id]);
+
+  res.redirect("/posts");
 });
 
 module.exports = router;
