@@ -11,20 +11,18 @@ router.get("/", function (req, res) {
 });
 
 router.get("/posts", async function (req, res) {
-  const posts = await db.getDb().collection("posts").find().toArray();
+  const posts = await db
+    .getDb()
+    .collection("posts")
+    .find({})
+    .project({ title: 1, summary: 1, "author.name": 1 })
+    .toArray();
   console.log(posts);
 
   res.render("posts-list", { posts: posts });
 });
 
-router.get("/new-post", async function (req, res) {
-  const authors = await db.getDb().collection("authors").find().toArray();
-  // console.log(authors);
-
-  res.render("create-post", { authors: authors });
-});
-
-router.post("/new-post", async function (req, res) {
+router.post("/posts", async function (req, res) {
   const authorId = new ObjectId(req.body.author);
   const author = await db
     .getDb()
@@ -45,10 +43,80 @@ router.post("/new-post", async function (req, res) {
 
   const result = await db.getDb().collection("posts").insertOne(newPost);
 
-  console.log(result);
-  console.log(newPost);
+  // console.log(result);
+  // console.log(newPost);
 
   res.redirect("/posts");
+});
+
+router.get("/posts/:id", async function (req, res) {
+  const postId = new ObjectId(req.params.id);
+  const post = await db
+    .getDb()
+    .collection("posts")
+    .findOne({ _id: postId }, { projection: { summary: 0 } });
+
+  if (!post) {
+    return res.status(404).render("404");
+  }
+
+  post.humanReadableDate = post.date.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  post.date = post.date.toISOString();
+
+  // console.log(post);
+  res.render("post-detail", { post: post });
+});
+
+router.get("/posts/:id/edit", async function (req, res) {
+  const postId = new ObjectId(req.params.id);
+  const post = await db
+    .getDb()
+    .collection("posts")
+    .findOne(
+      { _id: postId },
+      { projection: { title: 1, summary: 1, body: 1 } }
+    );
+
+  if (!post) {
+    return res.status(404).render("404");
+  }
+
+  res.render("update-post", { post: post });
+});
+
+router.post("/posts/:id/edit", async function (req, res) {
+  const postId = new ObjectId(req.params.id);
+  const postUpdate = req.body;
+  console.log(postUpdate);
+  const result = await db
+    .getDb()
+    .collection("posts")
+    .updateOne(
+      { _id: postId },
+      {
+        $set: {
+          title: postUpdate.title,
+          summary: postUpdate.summary,
+          body: postUpdate.content,
+        },
+      }
+    );
+
+  console.log(result);
+  // res.redirect(`/posts/${req.params.id}`);
+  res.redirect(`/posts`);
+});
+
+router.get("/new-post", async function (req, res) {
+  const authors = await db.getDb().collection("authors").find().toArray();
+  // console.log(authors);
+
+  res.render("create-post", { authors: authors });
 });
 
 module.exports = router;
