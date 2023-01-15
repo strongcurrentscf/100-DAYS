@@ -56,6 +56,7 @@ router.get("/posts/:id", async function (req, res) {
     postId = new ObjectId(postId);
   } catch (error) {
     return res.status(404).render("404");
+    // return next(error)
   }
 
   const post = await db
@@ -117,7 +118,14 @@ router.post("/posts/:id/edit", async function (req, res) {
 
   console.log(result);
   // res.redirect(`/posts/${req.params.id}`);
-  res.redirect(`/posts`);
+  res.redirect("/posts");
+});
+
+router.post("/posts/:id/delete", async function (req, res) {
+  const postId = new ObjectId(req.params.id);
+  db.getDb().collection("posts").findOneAndDelete({ _id: postId });
+
+  res.redirect("/posts");
 });
 
 router.get("/new-post", async function (req, res) {
