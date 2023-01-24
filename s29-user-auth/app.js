@@ -1,15 +1,16 @@
 const path = require("path");
 
 const express = require("express");
-const session = require("express-sessions");
+const session = require("express-session");
 const mongodbStore = require("connect-mongodb-session");
 
 const db = require("./data/database");
 const demoRoutes = require("./routes/demo");
 
+const MongoDBStore = mongodbStore(session);
+
 const app = express();
 
-const MongoDBStore = mongodbStore(session);
 const sessionStore = new MongoDBStore({
   uri: "mongodb://127.0.0.1:27017",
   databaseName: "auth-demo",
