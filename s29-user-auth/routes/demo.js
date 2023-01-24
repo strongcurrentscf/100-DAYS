@@ -19,9 +19,10 @@ router.get("/login", function (req, res) {
 });
 
 router.post("/signup", async function (req, res) {
-  const enteredEmail = req.body.email;
-  const enteredConfirmEmail = req.body["confirm-email"];
-  const enteredPassword = await bcrypt.hash(req.body.password, 12);
+  const userData = req.body;
+  const enteredEmail = userData.email; // userData['email']
+  const enteredConfirmEmail = userData["confirm-email"];
+  const enteredPassword = userData.password;
 
   if (
     !enteredEmail ||
@@ -35,21 +36,22 @@ router.post("/signup", async function (req, res) {
     return res.redirect("/signup");
   }
 
-  const user = {
-    email: enteredEmail,
-    confirmEmail: enteredConfirmEmail,
-    password: enteredPassword,
-  };
-
   const existingUser = await db
     .getDb()
     .collection("users")
-    .findOne({ email: user.email });
+    .findOne({ email: enteredEmail });
 
   if (existingUser) {
     console.log("USER EXISTS ALREADY!");
     return res.redirect("/signup");
   }
+
+  const hashedPassword = await bcrypt.hash(enteredPassword, 12);
+
+  const user = {
+    email: enteredEmail,
+    password: hashedPassword,
+  };
 
   await db.getDb().collection("users").insertOne(user);
 
@@ -57,29 +59,27 @@ router.post("/signup", async function (req, res) {
 });
 
 router.post("/login", async function (req, res) {
-  const enteredEmail = req.body.email;
-  const enteredPassword = req.body.password;
-
-  const user = {
-    email: enteredEmail,
-    password: enteredPassword,
-  };
+  const userData = req.body;
+  const enteredEmail = userData.email;
+  const enteredPassword = userData.password;
 
   const existingUser = await db
     .getDb()
     .collection("users")
-    .findOne({ email: user.email });
+    .findOne({ email: enteredEmail });
 
   if (!existingUser) {
+    console.log("COULD NOT LOG IN!");
     return res.redirect("/login");
   }
 
-  const matchingPassword = await bcrypt.compare(
-    user.password,
+  const matchingPasswords = await bcrypt.compare(
+    enteredPassword,
     existingUser.password
   );
 
-  if (!matchingPassword) {
+  if (!matchingPasswords) {
+    console.log("COULD NOT LOG IN - PASSWORDS ARE NOT EQUAL!");
     return res.redirect("/login");
   }
 
@@ -91,6 +91,9 @@ router.post("/login", async function (req, res) {
 });
 
 router.get("/admin", function (req, res) {
+  if (!req.session.isAuthenticated) {
+    return res.status(401).render("401");
+  }
   res.render("admin");
 });
 
