@@ -3,6 +3,7 @@ const path = require("path");
 const express = require("express");
 const session = require("express-session");
 const mongodbStore = require("connect-mongodb-session");
+const csrf = require("csurf");
 
 const db = require("./data/database");
 const demoRoutes = require("./routes/demo");
