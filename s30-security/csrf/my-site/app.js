@@ -32,11 +32,9 @@ app.use(
     store: sessionStore,
     cookie: {
       maxAge: 2 * 24 * 60 * 60 * 1000,
-      sameSite: "lax",
     },
   })
 );
-
 app.use(csrf());
 
 app.use(async function (req, res, next) {
