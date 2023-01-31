@@ -23,7 +23,7 @@ router.get("/signup", function (req, res) {
 
   req.session.inputData = null;
 
-  const csrfToken = req.csrfToken();
+  // const csrfToken = req.csrfToken();
   res.render("signup", { inputData: sessionInputData, csrfToken: csrfToken });
   // res.render("signup", { inputData: sessionInputData });
 });
@@ -41,8 +41,9 @@ router.get("/login", function (req, res) {
 
   req.session.inputData = null;
 
-  const csrfToken = req.csrfToken();
-  res.render("login", { inputData: sessionInputData, csrfToken: csrfToken });
+  // const csrfToken = req.csrfToken();
+  // res.render("login", { inputData: sessionInputData, csrfToken: csrfToken });
+  res.render("login", { inputData: sessionInputData });
 });
 
 router.post("/signup", async function (req, res) {
@@ -150,6 +151,10 @@ router.post("/login", async function (req, res) {
 
   req.session.user = { id: existingUser._id, email: existingUser.email };
   req.session.isAuthenticated = true;
+
+  // const csrfToken = req.csrfToken();
+  // req.session.save(function () {
+  //   res.redirect("/transaction", { csrfToken: csrfToken });
   req.session.save(function () {
     res.redirect("/transaction");
   });
@@ -160,8 +165,9 @@ router.get("/transaction", function (req, res) {
     return res.status(401).render("401");
   }
 
-  const csrfToken = req.csrfToken();
-  res.render("transaction", { csrfToken: csrfToken });
+  // const csrfToken = req.csrfToken();
+  // res.render("transaction", { csrfToken: csrfToken });
+  res.render("transaction");
 });
 
 router.post("/transaction", async function (req, res) {
@@ -188,8 +194,9 @@ router.post("/logout", function (req, res) {
   req.session.user = null;
   req.session.isAuthenticated = false;
 
-  const csrfToken = req.csrfToken();
-  res.redirect("/", { csrfToken: csrfToken });
+  // const csrfToken = req.csrfToken();
+  // res.redirect("/", { csrfToken: csrfToken });
+  res.redirect("/");
 });
 
 module.exports = router;

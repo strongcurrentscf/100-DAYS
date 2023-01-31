@@ -35,7 +35,7 @@ app.use(
     },
   })
 );
-app.use(csrf());
+// app.use(csrf());
 
 app.use(async function (req, res, next) {
   const user = req.session.user;
