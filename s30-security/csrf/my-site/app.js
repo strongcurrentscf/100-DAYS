@@ -32,9 +32,12 @@ app.use(
     store: sessionStore,
     cookie: {
       maxAge: 2 * 24 * 60 * 60 * 1000,
+      sameSite: "lax",
     },
   })
 );
+
+app.use(csrf());
 
 app.use(async function (req, res, next) {
   const user = req.session.user;
@@ -60,6 +63,9 @@ app.use(async function (req, res, next) {
 app.use(demoRoutes);
 
 app.use(function (error, req, res, next) {
+  console.log(error);
+  // console.log(req);
+  // console.log(res);
   res.render("500");
 });
 

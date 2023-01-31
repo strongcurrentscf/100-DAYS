@@ -7,6 +7,7 @@
   <%- include('includes/header.ejs') %>
   <main id="signup">
     <h1>Login</h1>
+    <input type="hidden" value="<%= csrfToken %> " name="_csrf">
     <% if (inputData.hasError) { %>
       <p id="input-error"><%= inputData.message %></p>
     <% } %>
