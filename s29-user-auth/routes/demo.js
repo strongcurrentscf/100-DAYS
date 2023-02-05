@@ -101,6 +101,7 @@ router.post("/signup", async function (req, res) {
   const user = {
     email: enteredEmail,
     password: hashedPassword,
+    // isAdmin: true
   };
 
   await db.getDb().collection("users").insertOne(user);
