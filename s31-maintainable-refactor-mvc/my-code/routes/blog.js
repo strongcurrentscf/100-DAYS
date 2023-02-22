@@ -184,8 +184,21 @@ router.get("/admin", async function (req, res) {
 
   const posts = await db.getDb().collection("posts").find().toArray();
 
+  let sessionInputData = req.session.inputData;
+
+  if (!sessionInputData) {
+    sessionInputData = {
+      hasError: false,
+      title: "",
+      content: "",
+    };
+  }
+
+  req.session.inputData = null;
+
   res.render("admin", {
     posts: posts,
+    inputData: sessionInputData,
     csrfToken: req.csrfToken(),
   });
 });
