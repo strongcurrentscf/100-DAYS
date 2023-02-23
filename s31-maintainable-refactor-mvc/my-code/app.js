@@ -7,6 +7,7 @@ const csrf = require("csurf");
 
 const db = require("./data/database");
 const blogRoutes = require("./routes/blog");
+const authRoutes = require("./routes/auth");
 
 const MongoDBStore = mongodbStore(session);
 
@@ -37,9 +38,11 @@ app.use(csrf());
 app.use(async function (req, res, next) {
   const isAuth = req.session.isAuthenticated;
   const user = req.session.user;
+  const csrfToken = req.session.csrfToken;
   // console.log(req.session);
 
   if (!user || !isAuth) {
+    req.session.user = { isAdmin: false };
     return next();
   }
 
@@ -48,24 +51,26 @@ app.use(async function (req, res, next) {
     .collection("users")
     // .findOne({ _id: user.id });
     .findOne({ email: user.email });
-  // console.log(userDoc);
+  console.log(userDoc);
 
   const isAdmin = userDoc.isAdmin;
 
   res.locals.isAuth = isAuth;
   res.locals.isAdmin = isAdmin;
+  res.locals.csrfToken = csrfToken;
 
   next();
 });
 
 app.use(blogRoutes);
+app.use(authRoutes);
 
 app.use(function (req, res) {
   res.status(404).render("404");
 });
 
 app.use(function (error, req, res, next) {
-  res.status(500).render("500");
+  res.status(500).render("500", { csrfToken: req.csrfToken() });
   console.log(error);
 });
 

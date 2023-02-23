@@ -1,7 +1,7 @@
 <%- include('includes/head.ejs', { title: 'Error!' }) %>
 </head>
 <body>
-  <%- include('includes/header.ejs') %>
+  <%- include('includes/header.ejs', {csrfToken: locals.csrfToken}) %>
   <main>
     <h1>Not authorized!</h1>
     <p>You are not authorized as an administrator!</p>
