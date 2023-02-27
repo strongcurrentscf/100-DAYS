@@ -2,6 +2,8 @@ const express = require("express");
 const mongodb = require("mongodb");
 
 const db = require("../data/database");
+const Post = require("../models/post");
+
 const ObjectId = mongodb.ObjectId;
 
 const router = express.Router();
@@ -19,7 +21,7 @@ router.get("/admin", async function (req, res) {
     return res.status(403).render("403");
   }
 
-  const posts = await db.getDb().collection("posts").find().toArray();
+  const posts = await Post.fetchAll();
 
   let sessionInputData = req.session.inputData;
 
@@ -80,21 +82,12 @@ router.post("/posts", async function (req, res) {
       content: enteredContent,
     };
 
-    if (req.session.user.isAdmin) {
-      res.redirect("/admin");
-      return;
-    }
-
     res.redirect("/profile");
     return; // or return res.redirect('/admin'); => Has the same effect
   }
 
-  const newPost = {
-    title: enteredTitle,
-    content: enteredContent,
-  };
-
-  await db.getDb().collection("posts").insertOne(newPost);
+  const post = new Post(enteredTitle, enteredContent);
+  await post.save();
 
   if (req.session.user.isAdmin) {
     res.redirect("/admin");
@@ -106,10 +99,10 @@ router.post("/posts", async function (req, res) {
 });
 
 router.get("/posts/:id/edit", async function (req, res) {
-  const postId = new ObjectId(req.params.id);
-  const post = await db.getDb().collection("posts").findOne({ _id: postId });
+  const post = new Post(null, null, new ObjectId(req.params.id));
+  await post.fetch();
 
-  if (!post) {
+  if (!post.title || !post.content) {
     res.status(404).render("404");
     return;
   }
@@ -153,20 +146,15 @@ router.post("/posts/:id/edit", async function (req, res) {
     return;
   }
 
-  await db
-    .getDb()
-    .collection("posts")
-    .updateOne(
-      { _id: postId },
-      { $set: { title: enteredTitle, content: enteredContent } }
-    );
+  const post = new Post(enteredTitle, enteredContent, postId);
+  post.save();
 
   res.redirect("/profile");
 });
 
 router.post("/posts/:id/delete", async function (req, res) {
-  const postId = new ObjectId(req.params.id);
-  await db.getDb().collection("posts").deleteOne({ _id: postId });
+  const post = new Post(null, null, new ObjectId(req.params.id));
+  await post.delete();
 
   res.redirect("/profile");
 });
