@@ -1,7 +1,7 @@
-const mongodb = require("mongodb");
-const db = require("../data/database");
 const Post = require("../models/post");
-const ObjectId = mongodb.ObjectId;
+const validationSession = require("../util/validation-session");
+const sessionValidation = require("../util/validation-session");
+const validation = require("../util/validation");
 
 function getHome(req, res) {
   res.render("welcome", { csrfToken: req.csrfToken() });
@@ -18,21 +18,14 @@ async function getAdmin(req, res) {
 
   const posts = await Post.fetchAll();
 
-  let sessionInputData = req.session.inputData;
-
-  if (!sessionInputData) {
-    sessionInputData = {
-      hasError: false,
-      title: "",
-      content: "",
-    };
-  }
-
-  req.session.inputData = null;
+  let sessionErrorData = sessionValidation.getSessionErrorData(req, {
+    title: "",
+    content: "",
+  });
 
   res.render("admin", {
     posts: posts,
-    inputData: sessionInputData,
+    inputData: sessionErrorData,
     csrfToken: req.csrfToken(),
   });
 }
@@ -42,10 +35,13 @@ async function getProfile(req, res) {
     return res.status(401).render("401");
   }
 
-  const posts = await db.getDb().collection("posts").find().toArray();
+  const posts = await Post.fetchAll();
+
+  let sessionErrorData = sessionValidation.getSessionErrorData(req);
 
   res.render("profile", {
     posts: posts,
+    inputData: sessionErrorData,
     csrfToken: req.csrfToken(),
   });
 }
@@ -54,21 +50,20 @@ async function createPost(req, res) {
   const enteredTitle = req.body.title;
   const enteredContent = req.body.content;
 
-  if (
-    !enteredTitle ||
-    !enteredContent ||
-    enteredTitle.trim() === "" ||
-    enteredContent.trim() === ""
-  ) {
-    req.session.inputData = {
-      hasError: true,
-      message: "Invalid input - please check your data.",
-      title: enteredTitle,
-      content: enteredContent,
-    };
+  if (!validation.postIsValid(enteredTitle, enteredContent)) {
+    validationSession.flashErrorsToSession(
+      req,
+      {
+        message: "Invalid input - please check your data.",
+        title: enteredTitle,
+        content: enteredContent,
+      },
+      function () {
+        res.redirect("/profile");
+      }
+    );
 
-    res.redirect("/profile");
-    return; // or return res.redirect('/admin'); => Has the same effect
+    return;
   }
 
   const post = new Post(enteredTitle, enteredContent);
@@ -84,7 +79,7 @@ async function createPost(req, res) {
 }
 
 async function getSinglePost(req, res) {
-  const post = new Post(null, null, new ObjectId(req.params.id));
+  const post = new Post(null, null, req.params.id);
   await post.fetch();
 
   if (!post.title || !post.content) {
@@ -92,19 +87,14 @@ async function getSinglePost(req, res) {
     return;
   }
 
-  let sessionInputData = req.session.inputData;
-  if (!sessionInputData) {
-    sessionInputData = {
-      hasError: false,
-      title: post.title,
-      content: post.content,
-    };
-  }
-  req.session.inputData = null;
+  let sessionErrorData = sessionValidation.getSessionErrorData(req, {
+    title: post.title,
+    content: post.content,
+  });
 
   res.render("single-post", {
     post: post,
-    inputData: sessionInputData,
+    inputData: sessionErrorData,
     csrfToken: req.csrfToken(),
   });
 }
@@ -112,22 +102,21 @@ async function getSinglePost(req, res) {
 async function updatePost(req, res) {
   const enteredTitle = req.body.title;
   const enteredContent = req.body.content;
-  const postId = new ObjectId(req.params.id);
+  const postId = req.params.id;
 
-  if (
-    !enteredTitle ||
-    !enteredContent ||
-    enteredTitle.trim() === "" ||
-    enteredContent.trim() === ""
-  ) {
-    req.session.inputData = {
-      hasError: true,
-      message: "Invalid input - please check your data.",
-      title: enteredTitle,
-      content: enteredContent,
-    };
+  if (!validation.postIsValid(enteredTitle, enteredContent)) {
+    validationSession.flashErrorsToSession(
+      req,
+      {
+        message: "Invalid input - please check your data.",
+        title: enteredTitle,
+        content: enteredContent,
+      },
+      function () {
+        res.redirect(`/posts/${req.params.id}/edit`);
+      }
+    );
 
-    res.redirect(`/posts/${req.params.id}/edit`);
     return;
   }
 
@@ -138,7 +127,7 @@ async function updatePost(req, res) {
 }
 
 async function deletePost(req, res) {
-  const post = new Post(null, null, new ObjectId(req.params.id));
+  const post = new Post(null, null, req.params.id);
   await post.delete();
 
   res.redirect("/profile");

@@ -1,11 +1,15 @@
 // A model with methods to use anywhere having to do with posting functions; save, delete, etc...
+const { ObjectId } = require("mongodb");
 const db = require("../data/database");
 
 class Post {
   constructor(title, content, id) {
     this.title = title;
     this.content = content;
-    this.id = id; // may be undefined
+
+    if (id) {
+      this.id = new ObjectId(id);
+    }
   }
 
   async save() {
