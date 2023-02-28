@@ -1,6 +1,5 @@
 const Post = require("../models/post");
 const validationSession = require("../util/validation-session");
-const sessionValidation = require("../util/validation-session");
 const validation = require("../util/validation");
 
 function getHome(req, res) {
@@ -18,7 +17,7 @@ async function getAdmin(req, res) {
 
   const posts = await Post.fetchAll();
 
-  let sessionErrorData = sessionValidation.getSessionErrorData(req, {
+  let sessionErrorData = validationSession.getSessionErrorData(req, {
     title: "",
     content: "",
   });
@@ -37,7 +36,7 @@ async function getProfile(req, res) {
 
   const posts = await Post.fetchAll();
 
-  let sessionErrorData = sessionValidation.getSessionErrorData(req);
+  let sessionErrorData = validationSession.getSessionErrorData(req);
 
   res.render("profile", {
     posts: posts,
@@ -87,7 +86,7 @@ async function getSinglePost(req, res) {
     return;
   }
 
-  let sessionErrorData = sessionValidation.getSessionErrorData(req, {
+  let sessionErrorData = validationSession.getSessionErrorData(req, {
     title: post.title,
     content: post.content,
   });
