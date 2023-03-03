@@ -1,8 +1,6 @@
-const bcrypt = require("bcryptjs");
-
-const db = require("../data/database");
 const validationSession = require("../util/validation-session");
 const validation = require("../util/validation");
+const User = require("../models/user");
 
 function getSignup(req, res) {
   let sessionInputData = validationSession.getSessionErrorData(req, {
@@ -12,7 +10,6 @@ function getSignup(req, res) {
 
   res.render("signup", {
     inputData: sessionInputData,
-    csrfToken: req.csrfToken(),
   });
 }
 
@@ -25,97 +22,98 @@ function getLogin(req, res) {
 
   res.render("login", {
     inputData: sessionInputData,
-    csrfToken: req.csrfToken(),
   });
 }
 
-async function createUser(req, res) {
+async function signup(req, res) {
   const userData = req.body;
   const enteredEmail = userData.email;
   const enteredConfirmEmail = userData["confirm-email"];
   const enteredPassword = userData.password;
-  const inputData = { enteredEmail, enteredConfirmEmail, enteredPassword };
 
-  if (!validation.signupInputIsValid(inputData)) {
-    // let errorLog = validationSession.getSignupErrorData(inputData);
-
-    // req.session.inputData = errorLog;
-
-    req.session.inputData = validationSession.getSignupErrorData(inputData);
-
-    req.session.save(function () {
-      res.redirect("signup");
-    });
+  if (
+    !validation.signupInputIsValid(
+      enteredEmail,
+      enteredConfirmEmail,
+      enteredPassword
+    )
+  ) {
+    validationSession.flashErrorsToSession(
+      req,
+      {
+        message: "Invalid input - please check your data.",
+        email: enteredEmail,
+        confirmEmail: enteredConfirmEmail,
+        password: enteredPassword,
+      },
+      function () {
+        res.redirect("signup");
+      }
+    );
     return;
   }
 
-  const existingUser = await db
-    .getDb()
-    .collection("users")
-    .findOne({ email: enteredEmail });
+  const newUser = new User(enteredEmail, enteredPassword);
+  const userExistAlready = await newUser.existsAlready();
 
-  if (existingUser) {
-    errorLog.message = "User already exists!";
-
-    req.session.inputData = errorLog;
-
-    req.session.save(function () {
-      res.redirect("signup");
-    });
+  if (userExistAlready) {
+    validationSession.flashErrorsToSession(
+      req,
+      {
+        message: "User exists already!",
+        email: enteredEmail,
+        confirmEmail: enteredConfirmEmail,
+        password: enteredPassword,
+      },
+      function () {
+        res.redirect("signup");
+      }
+    );
     return;
   }
 
-  const hashedPassword = await bcrypt.hash(enteredPassword, 12);
-
-  const user = {
-    email: enteredEmail,
-    password: hashedPassword,
-    isAdmin: false,
-  };
-
-  await db.getDb().collection("users").insertOne(user);
+  await newUser.signup();
 
   res.redirect("login");
 }
 
-async function authenticateUser(req, res) {
+async function login(req, res) {
   const userData = req.body;
   const enteredEmail = userData.email;
   const enteredPassword = userData.password;
 
-  const existingUser = await db
-    .getDb()
-    .collection("users")
-    .findOne({ email: enteredEmail });
+  const newUser = new User(enteredEmail, enteredPassword);
+  const existingUser = await newUser.getUserWithSameEmail();
 
   if (!existingUser) {
-    req.session.inputData = {
-      hasError: true,
-      message: "Could not log you in - please check your credentials!",
-      email: enteredEmail,
-      password: enteredPassword,
-    };
-    req.session.save(function () {
-      res.redirect("/login");
-    });
+    validationSession.flashErrorsToSession(
+      req,
+      {
+        message: "Could not log you in - please check your credentials!",
+        email: enteredEmail,
+        password: enteredPassword,
+      },
+      function () {
+        res.redirect("login");
+      }
+    );
     return;
   }
 
-  const passwordsAreEqual = await bcrypt.compare(
-    enteredPassword,
-    existingUser.password
-  );
+  const success = await newUser.login(existingUser.password);
 
-  if (!passwordsAreEqual) {
-    req.session.inputData = {
-      hasError: true,
-      message: "Could not log you in - please check your credentials!",
-      email: enteredEmail,
-      password: enteredPassword,
-    };
-    req.session.save(function () {
-      res.redirect("/login");
-    });
+  if (!success) {
+    validationSession.flashErrorsToSession(
+      req,
+      {
+        message: "Could not log you in - please check your credentials!",
+        email: enteredEmail,
+        password: enteredPassword,
+      },
+      function () {
+        res.redirect("login");
+      }
+    );
     return;
   }
 
@@ -143,18 +141,16 @@ async function authenticateUser(req, res) {
   });
 }
 
-function exitUser(req, res) {
+function logout(req, res) {
   req.session.user = null;
   req.session.isAuthenticated = false;
-  req.session.csrfToken = req.csrfToken();
-
   res.redirect("/");
 }
 
 module.exports = {
   getSignup: getSignup,
   getLogin: getLogin,
-  createUser: createUser,
-  authenticateUser: authenticateUser,
-  exitUser: exitUser,
+  signup: signup,
+  login: login,
+  logout: logout,
 };

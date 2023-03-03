@@ -2,11 +2,8 @@ function postIsValid(title, content) {
   return title && content && title.trim() !== "" && content.trim() !== "";
 }
 
-function signupInputIsValid(inputData) {
-  return (
-    inputData.email || inputData.confirmEmail || inputData.password
-    // || inputData.email.includes("@")
-  );
+function signupInputIsValid(email, confirmEmail, password) {
+  return email && confirmEmail && password && email.includes("@");
 }
 
 module.exports = {
