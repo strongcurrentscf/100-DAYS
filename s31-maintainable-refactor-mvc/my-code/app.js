@@ -27,8 +27,8 @@ app.use(csrf());
 app.use(authMiddleware);
 app.use(addCSRFTokenMiddleware);
 
-app.use(blogRoutes);
 app.use(authRoutes);
+app.use(blogRoutes);
 
 app.use(function (req, res) {
   res.status(404).render("404");

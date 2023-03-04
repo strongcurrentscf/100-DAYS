@@ -7,14 +7,6 @@ function getHome(req, res) {
 }
 
 async function getAdmin(req, res) {
-  if (
-    !res.locals.isAuth ||
-    !res.locals.isAdmin ||
-    res.locals.isAdmin === false
-  ) {
-    return res.status(403).render("403");
-  }
-
   const posts = await Post.fetchAll();
 
   let sessionErrorData = validationSession.getSessionErrorData(req, {
@@ -25,15 +17,10 @@ async function getAdmin(req, res) {
   res.render("admin", {
     posts: posts,
     inputData: sessionErrorData,
-    csrfToken: req.csrfToken(),
   });
 }
 
 async function getProfile(req, res) {
-  if (!req.session.isAuthenticated) {
-    return res.status(401).render("401");
-  }
-
   const posts = await Post.fetchAll();
 
   let sessionErrorData = validationSession.getSessionErrorData(req);
@@ -41,7 +28,6 @@ async function getProfile(req, res) {
   res.render("profile", {
     posts: posts,
     inputData: sessionErrorData,
-    csrfToken: req.csrfToken(),
   });
 }
 
@@ -77,8 +63,15 @@ async function createPost(req, res) {
   return;
 }
 
-async function getSinglePost(req, res) {
-  const post = new Post(null, null, req.params.id);
+async function getSinglePost(req, res, next) {
+  let post;
+  try {
+    post = new Post(null, null, req.params.id);
+  } catch (error) {
+    // next(error);
+    res.status(404).render("404");
+    return;
+  }
   await post.fetch();
 
   if (!post.title || !post.content) {
@@ -94,7 +87,6 @@ async function getSinglePost(req, res) {
   res.render("single-post", {
     post: post,
     inputData: sessionErrorData,
-    csrfToken: req.csrfToken(),
   });
 }
 
